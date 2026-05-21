@@ -42,6 +42,7 @@ export class PembelianService {
     );
     if (duplikat.length > 0) {
       throw new BadRequestException(
+        // eslint-disable-next-line @typescript-eslint/restrict-template-expressions
         `Kursi dengan id ${duplikat} dipilih lebih dari sekali`,
       );
     }
@@ -57,6 +58,7 @@ export class PembelianService {
     if (kursiSudahDipesan.length > 0) {
       const idSudahDipesan = kursiSudahDipesan.map((k) => k.id_kursi);
       throw new BadRequestException(
+        // eslint-disable-next-line @typescript-eslint/restrict-template-expressions
         `Kursi dengan id ${idSudahDipesan} sudah dipesan`,
       );
     }
@@ -81,6 +83,7 @@ export class PembelianService {
       });
 
       // Tambah yang sedang dipesan dari request ini (kursi di gerbong yang sama)
+      // eslint-disable-next-line @typescript-eslint/no-misused-promises
       const kursiDiGerbongSama = dto.penumpang.filter(async (p) => {
         const k = await this.prisma.kursi.findUnique({
           where: { id: p.id_kursi },
