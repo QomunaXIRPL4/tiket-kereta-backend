@@ -68,8 +68,17 @@ export class PelangganService {
   }
 
   async create(dto: CreatePelangganDto) {
+    if (!dto.id_user) {
+      throw new NotFoundException('id_user is required');
+    }
     return this.prisma.pelanggan.create({
-      data: dto,
+      data: {
+        NIK: dto.NIK,
+        nama_penumpang: dto.nama_penumpang,
+        alamat: dto.alamat,
+        telp: dto.telp,
+        id_user: dto.id_user,
+      },
       include: { user: { select: { username: true, role: true } } },
     });
   }
