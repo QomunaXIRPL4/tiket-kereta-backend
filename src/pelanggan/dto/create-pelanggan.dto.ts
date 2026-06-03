@@ -22,7 +22,8 @@ export class CreatePelangganDto {
   @IsOptional()
   telp?: string;
 
-  @ApiProperty({ example: 3 })
+  @ApiProperty({ example: 3, required: false })
   @IsNumber()
-  id_user: number;
+  @IsOptional()
+  id_user?: number;
 }
