@@ -7,6 +7,7 @@ import {
   Param,
   Delete,
   UseGuards,
+  Request,
 } from '@nestjs/common';
 import { ApiBearerAuth, ApiOperation, ApiTags } from '@nestjs/swagger';
 import { PelangganService } from './pelanggan.service';
@@ -23,6 +24,31 @@ import { Roles } from '../auth/decorators/roles.decorator';
 export class PelangganController {
   constructor(private readonly pelangganService: PelangganService) {}
 
+  // Pelanggan isi profil sendiri (tidak perlu id_user di body)
+  @Post('profil')
+  @Roles('penumpang')
+  @ApiOperation({ summary: 'Pelanggan mengisi data profil sendiri' })
+  createProfil(@Body() dto: CreatePelangganDto, @Request() req) {
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
+    return this.pelangganService.createProfil(dto, req.user.userId);
+  }
+
+  // Pelanggan lihat profil sendiri
+  @Get('profil')
+  @Roles('penumpang')
+  @ApiOperation({ summary: 'Pelanggan melihat profil sendiri' })
+  getMyProfil(@Request() req) {
+    return this.pelangganService.findByUserId(req.user.userId);
+  }
+
+  // Pelanggan update profil sendiri
+  @Patch('profil')
+  @Roles('penumpang')
+  @ApiOperation({ summary: 'Pelanggan update profil sendiri' })
+  updateMyProfil(@Body() dto: UpdatePelangganDto, @Request() req) {
+    return this.pelangganService.updateByUserId(dto, req.user.userId);
+  }
+
   @Post()
   @Roles('admin')
   @ApiOperation({ summary: 'Tambah pelanggan (Admin)' })
@@ -38,7 +64,8 @@ export class PelangganController {
   }
 
   @Get(':id')
-  @ApiOperation({ summary: 'Lihat detail pelanggan' })
+  @Roles('admin')
+  @ApiOperation({ summary: 'Lihat detail pelanggan (Admin)' })
   findOne(@Param('id') id: string) {
     return this.pelangganService.findOne(+id);
   }
